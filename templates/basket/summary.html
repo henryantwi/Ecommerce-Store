@@ -1,0 +1,217 @@
+{% extends "../store/base.html" %} 
+{% load static %} 
+{% load humanize %}
+{% block title %}Basket Summary{%endblock %} 
+
+{% block content %}
+
+<main class="pt-5">
+  <div class="container" style="max-width: 1000px">
+    <div class="alert alert-success" role="alert" style="text-align: center; display: none;" id="success-alert">
+      Your basket has been <b>successfully</b> updated!
+    </div>
+    <div class="col-12">
+      <h1 class="h2 fw-bold">Your Basket</h1>
+    </div>
+    <br>
+    <div class="col-12">
+      <p class="h5" style="text-decoration: underline;">Manage your <b>items</b> in your basket</p>
+    </div>
+    
+  </div>
+  <div class="container" style="max-width: 1000px">
+    
+    <div class="row g-3">
+      <div class="col-12 bg-light mb-3 p-3 d-flex justify-content-between">
+        <div class="d-flex d-flex-inline">
+          <div class="pe-3">Order</div>
+          <div class="dropdown">
+          <a class="text-reset text-decoration-none dropdown-toggle" href="#" role="link" id="dropdownLink" data-bs-toggle="dropdown" aria-expanded="false">
+          Shipping options
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+          </svg>
+          </a>
+
+          <ul class="dropdown-menu" aria-labelledby="dropdownLink">
+            <li class="item small">Standard delivery</li>
+            <li class="item small">Premimum delivery</li>
+          </ul>
+          </div>
+        </div>
+        <div class="text-end">
+          
+          <div class="">Sub Total: <span class="fw-bold">GH₵ </span><div id="subtotal" class="d-inline-flex fw-bold">{{basket.get_subtotal_price|floatformat:2|intcomma }}</div></div>
+          <div id="">Shipping <span class="small">(Next day delivery)</span>: <span class="fw-bold">GH₵ 11.50</span></div>
+          <div class="pt-2">Total to pay: <span class="fw-bold h5">GH₵ </span><span id="total" class="fw-bold h5">{{basket.get_total_price|floatformat:2|intcomma }}</span></div>
+          
+        </div>
+      </div>
+      <div class="col-md-5 col-lg-4 order-md-last p-0 order-3">
+        <div class="d-grid gap-2">
+          {% if basket %}
+            <a role="button" href="{% url 'orders:initiate-payment' %}" class="btn btn-success fw-bold" type="button">Checkout</a>
+          {% else %}
+            <a role="button" href="/" class="btn btn-success fw-bold" type="button" disabled>Basket is empty!</a>
+          {% endif %}
+          <button class="btn btn-light" type="button">Save for later</button>
+        </div>
+      </div>
+
+      <div class="col-md-7 col-lg-8 p-0">
+
+        {% for item in basket %}
+          {% with product=item.product %}
+
+            <div class="card mb-1 border-0 product-item" data-index="{{product.id}}">
+              <div class="row g-0">
+                <div class="col-md-2 d-none d-md-block">
+                  <img class="img-fluid mx-auto d-block" alt="Responsive image"
+                      src="{{ product.image.url }}" />
+                    </div>
+                
+                <div class="col-md-10 ps-md-3">
+                  <div class="card-body p-1">
+                    <a class="text-decoration-none text-reset" href="{{item.product.get_absolute_url}}">
+                      <p class="card-text pb-1">{{ product.title|slice:":35" }}...</p>
+                    </a>
+                    <p class="card-text"><em>GH₵ {{product.price|floatformat:2|intcomma }}</em></p>
+                    <div>
+                        <!-- <label for="select">Qty</label> -->
+                        <button type="button" class="minus-button btn btn-outline-success" data-index="{{product.id}}" style="width: 30px; height: 30px; padding: 0;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                          </svg>
+                          <span class="visually-hidden">Button</span>
+                        </button>
+                        <span id="qty{{product.id}}" style="margin: 0 10px; color: #198754;">{{item.qty}}</span>
+                        <button type="button" class="plus-button btn btn-outline-success" data-index="{{product.id}}" style="width: 30px; height: 30px; padding: 0;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16" style="width: 16px; height: 16px;">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
+                          </svg>
+                        </button>
+
+                        <a type="button" class="btn btn-outline-danger mx-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{product.id}}" style="width: 30px; height: 30px; padding: 0;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" style="margin-bottom: -2px;" class="bi bi-trash" viewBox="0 0 16 16">
+                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"></path>
+                          <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"></path>
+                        </svg>
+                      
+                          <!-- Button -->
+                        </a>
+                    </div>
+                  </div>
+                  {% if not forloop.last %}
+                    <hr class="col-md" style="color: transparent;">
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- modal -->
+            <div class="modal fade" id="staticBackdrop{{product.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Remove from basket</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Do you really want to remove this item from the basket?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger delete-button" data-bs-dismiss="modal" data-index="{{product.id}}">Remove Item</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endwith %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+  const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+  // Delete Item
+  $(document).on("click", ".delete-button", function (e) {
+    e.preventDefault();
+    var prodid = $(this).data("index");
+    $.ajax({
+      type: "POST",
+      url: '{% url "basket:basket_delete" %}',
+      data: {
+        productid: prodid,
+        csrfmiddlewaretoken: "{{csrf_token}}",
+        action: "post",
+      },
+      success: function (json) {
+        $('.product-item[data-index="' + prodid + '"]').remove();
+
+        if (json.qty == 0) {
+          total = "0.00";
+          subtotal = "0.00";
+        } else {
+          subtotal = parseFloat(json.subtotal).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          total = (parseFloat(json.total)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        document.getElementById("subtotal").innerHTML = subtotal;
+        document.getElementById("basket-qty").innerHTML = json.qty;
+        document.getElementById("total").innerHTML = total;
+
+        $('#success-alert').show();
+        setTimeout(function() {
+          $('#success-alert').hide();
+        }, 1500);
+      },
+      error: function (xhr, errmsg, err) {
+        console.log(errmsg);
+      },
+    });
+  });
+
+
+
+  // Update Item
+  $(document).on("click", ".plus-button, .minus-button", function (e) {
+    e.preventDefault();
+    var prodid = $(this).data("index");
+    var oldValue = parseInt($("#qty" + prodid).text());
+    var newValue = oldValue;
+
+    if ($(this).hasClass("plus-button")) {
+      newValue = oldValue + 1;
+    } else if (oldValue > 1) {
+      newValue = oldValue - 1;
+    }
+
+    $.ajax({
+      type: "POST",
+      url: '{% url "basket:basket_update" %}',
+      data: {
+        productid: prodid,
+        productqty: newValue,
+        csrfmiddlewaretoken: "{{csrf_token}}",
+        action: "post",
+      },
+      success: function (json) {
+        subtotal = parseFloat(json.subtotal).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        total = (parseFloat(json.total)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById("basket-qty").innerHTML = json.qty;
+        document.getElementById("subtotal").innerHTML =  subtotal;
+        document.getElementById("total").innerHTML = total;
+        $("#qty" + prodid).text(newValue);
+      },
+      error: function (xhr, errmsg, err) {
+        console.log(errmsg);
+      },
+    });
+  });
+</script>
+
+{% endblock %}

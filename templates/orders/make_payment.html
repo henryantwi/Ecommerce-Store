@@ -1,0 +1,117 @@
+{% extends '../store/base.html' %}
+{% load static %}
+{% load humanize %} 
+
+{% block title %}
+  Payment Initiation
+{% endblock title %}
+  
+{% block style_ %}
+  /* CSS for the loading spinner */
+  .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #7983ff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    display: none; /* Initially hide the spinner */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999; /* Ensure the spinner is above other content */
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+  }
+
+  /* Spinner animation */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Overlay to gray out the screen */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    display: none; /* Initially hide the overlay */
+    z-index: 999; /* Ensure the overlay is above other content except the spinner */
+  }
+
+
+{% endblock style_ %}
+
+{% block for_loading %}
+  <!-- Loading Spinner -->
+<div class="spinner" id="loadingSpinner" style="margin-left: -24px;"></div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div> 
+{% endblock for_loading %}  
+
+{% block content %}
+
+
+<div class="container my-5">
+    <div class="p-5 text-center bg-body-tertiary rounded-3">
+  
+      <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
+        <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1H1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+        <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V5zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H3z"/>
+      </svg>
+
+      <h1 class="text-body-emphasis">Payment Initiation</h1>
+      <p class="col-lg-8 mx-auto fs-5 text-muted">
+        You are about to initiate payment for <b>GH₵ {{ amount|stringformat:".2f"|intcomma }}</b>
+      </p>
+      
+      <div class="d-inline-flex gap-2 mb-5">
+       
+        <script src="https://js.paystack.co/v1/inline.js"></script>
+
+        <a href="./" class="btn btn-large btn-danger">Go back</a>
+        <button class="btn btn-large btn-success" onclick="payWithPayStack()" id="django-paystack-button">Initiate Payment</button>
+
+      </div>
+    </div>
+</div>
+
+
+<script>
+  function payWithPayStack(){
+    var spinner = document.getElementById('loadingSpinner');
+    var overlay = document.getElementById('overlay');
+  
+    spinner.style.display = 'block'; // Show the spinner
+    overlay.style.display = 'block'; // Show the overlay
+
+   let currency = "GHS";
+   let plan = "";
+   let ref = "{{ payment.ref }}"
+   let obj = {
+       key: '{{ paystack_public_key }}',
+       email: '{{ payment.email }}',
+       amount: '{{ payment.amount_value }}',
+       ref: ref,
+       callback: function(response){
+           window.location.href = "{% url 'orders:verify-payment' payment.ref %}";
+       }
+   }
+   if (Boolean(currency)) {
+       obj.currency = currency.toUpperCase
+   }
+   if (Boolean(plan)){
+       obj.plan = plan;
+   }
+   var handler = PaystackPop.setup(obj);
+   handler.openIframe();
+  }
+
+</script>
+
+{% endblock content %}
+    

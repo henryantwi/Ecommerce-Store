@@ -1,0 +1,74 @@
+{% extends "../base.html" %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+{% if category %}{{ category.name }}{% else %}Products{% endif %}
+{% endblock %}
+{% block style_ %}
+  .text-muted {
+    text-decoration: line-through;
+    font-style: italic;
+  }
+  .card {
+    
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-top: -2px;
+  }
+
+  .this {
+    background-color: transparent;
+    color: transparent;
+    border-color: transparent;
+  }
+{% endblock style_ %}
+
+{% block content %}
+<main>
+  <div class="container">
+    <div class="row">
+      <div class="album py-5">
+
+        {% if query %}
+            <div class="pb-5"><p class="h2 fw-bold">Showing results for "{{ query }}"</p></div>
+        {% else %}
+            <div class="pb-5"><p class="h2 fw-bold">All Products</p></div>
+        {% endif %}
+        
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+
+        {% if products %}
+          {% for product in products %}
+          
+          <div class="col">
+          <div class="card border-0 box-shadow h-100">
+              <a href="{% url 'store:product_detail' product.slug %}"><img class="img-fluid" alt="Responsive image" src="{{ product.image.url }}"></a>
+              <div class="card-body">
+                <p class="card-text">
+                  <a class="text-dark text-decoration-none" href="{{ product.get_absolute_url }}">{{ product.title|title|slice:":30" }}..</a>
+                </p>
+              <div class="d-flex justify-content-between align-items-center pb-1">
+                <b>GH₵ {{ product.price|floatformat:2|intcomma }}</b>
+              </div>
+
+              <small class="text-muted">GH₵ {{ product.past_price|floatformat:2|intcomma }}</small>
+              <!-- <button class="btn btn-outline-secondary d-flex this">Add to basket</button> -->
+              </div>
+          </div>
+          </div>
+          {% endfor %}
+        {% else %}
+                <div class="">No products found!</div>
+        {% endif %}
+          
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+{% endblock %}

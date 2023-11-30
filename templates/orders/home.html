@@ -1,0 +1,182 @@
+{% extends "../store/base.html" %}
+{% load static %}
+{% block title %}Shipping Address{% endblock %}
+
+{% block style_ %}
+    .account-form input
+    {
+    border: 2px solid #ccc;
+    height: calc(2em + .75rem + 2px);
+    }
+
+    .form-control {
+    border: 2px solid #ccc;
+    }
+
+    .account-form input:focus {
+    border-color: #1497ff;
+    box-shadow: inset 0 0px 0px rgba(0, 0, 0, 0.075), 0 0 0px rgba(255, 0, 0, 0.6);
+    }
+{% endblock style_ %}
+    
+{% block content %}
+<div class="container-fluid">
+  <div class="row no-gutter">
+    <div class="col-md-12">
+      <div class="login d-flex align-items-center py-5">
+        <div class="container">
+          <div class="row">
+            <div id="payment-form" class="col-12 col-lg-6 mx-auto">
+              <h3 class="mb-3">Shipping address</h3>
+              <!-- <h3 class="mb-3">Billing address</h3> -->
+
+              <!-- Error messages in this element -->
+              <div id="card-errors" class="a" role="alert"></div>
+              <form method="post" action="{% url 'orders:initiate-payment' %}">
+                {% csrf_token %}
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label for="firstName" class="form-label">Customer Name</label>
+                    <input type="text" class="form-control" name="custName" id="custName" value="{{ user.full_name }}" placeholder="John Doe" autofocus required>
+                    <div class="invalid-feedback">
+                      Valid first name is required.
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label for="email" class="form-label">Email <span class="text-muted">(cannot be changed)</span></label>
+                    <input type="email" name="email" value="{{ user.email }}" readonly class="form-control" id="email">
+                    <div class="invalid-feedback">
+                      Please enter a valid email address for shipping updates.
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label for="address" class="form-label">Phone</label>
+                    {% if user.phone_number %}
+                      <input type="tel" class="form-control" name="custPhone" value="{{ user.phone_number }}" id="custPhone" placeholder="02441414256" required>
+                    {% elif user.phone_number is None %}
+                      <input type="tel" class="form-control" name="custPhone" value="" id="custPhone" placeholder="+233244875412" required>
+                    {% else %}  
+                      <input type="tel" class="form-control" name="custPhone" value="" id="custPhone" placeholder="+233244875412" required>
+                    {% endif %}
+                    <div class="invalid-feedback">
+                      Please enter your phone number.
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" name="address1" id="custAdd" placeholder="Coca Cola Roundabout" required>
+                    <div class="invalid-feedback">
+                      Please enter your shipping address.
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label for="address2" class="form-label">Digital Address<span
+                        class="text-muted">(Optional)</span></label>
+                        <input type="text" class="form-control" name="address2" id="custAdd2" placeholder="GW-238-188">
+                  </div>
+                  <br>
+                  <br>
+                  <div class="col-12">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="country" class="form-label">Country</label>
+                            <select class="form-select form-control" name="country" id="country" required>
+                                <option value="Ghana">Ghana</option>
+                                <!-- <option>Ghana</option> -->
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a valid country.
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="state" class="form-label">Region</label>
+                            <select class="form-select form-control" name="state" id="state" required>
+                                <option value="">Choose...</option>
+                                <option>Greater Accra</option>
+                                <option>Ashanti</option>
+                                <option>Western</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please provide a valid state.
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="city" class="form-label">City</label>
+                            <select class="form-select form-control" name="city" id="city" required>
+                                <option value=""></option>
+                            </select>
+                            <div class="invalid-feedback">
+                                City required.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <button class="btn btn-primary btn-block py-2 mb-4 mt-5 fw500 w-100" type="submit" value="submit">Continue to Payment</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Set default value for the country dropdown
+  document.getElementById("country").value = "Ghana";
+
+  // Function to handle dynamic changes in the City dropdown based on the selected state
+  document.getElementById("state").addEventListener("change", function () {
+    var state = this.value;
+    var cityDropdown = document.getElementById("city");
+
+    // Clear previous options
+    cityDropdown.value = "";
+    cityDropdown.innerHTML = "";
+
+    // Define city options based on the selected state
+    if (state === "Western") {
+      var cities = ["Sekondi", "Takoradi", "Tarkwa"];
+    } else if (state === "Greater Accra") {
+      var cities = [
+        "Abelemkpe",
+        "Ablekuma",
+        "Adabraka",
+        "Amasaman",
+        "Baatsona-Spintex",
+        "Cantonment",
+        "Circle",
+        "Dansoman",
+        "Mataheko",
+        "Dome",
+        "East Legon",
+        "Haatso",
+        "Lapaz",
+        "Weija",
+        "Gbawe",
+      ];
+    } else if (state === "Ashanti") {
+      var cities = [
+        "Adum",
+        "Asafo",
+        "Asokwa",
+        "Ayeduasi",
+        "Buokrom",
+        "KNUST",
+        "Obuasi",
+        "Santasi",
+      ];
+    }
+
+    // Populate the City dropdown with the options
+    for (var i = 0; i < cities.length; i++) {
+      var option = document.createElement("option");
+      option.text = cities[i];
+      cityDropdown.add(option);
+    }
+  });
+</script>
+
+
+{% endblock %}

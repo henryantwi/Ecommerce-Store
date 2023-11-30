@@ -1,0 +1,101 @@
+{% extends "../../store/base.html" %}
+{% block title %}Edit Profile{% endblock %}
+
+
+{% block style_ %}
+    .account-form input {
+        border: 2px solid #ccc;
+        height: calc(2em + .75rem + 2px);
+    }
+
+    .account-form input:focus {
+        border-color: #1497ff;
+        box-shadow: none;
+    }
+{% endblock style_ %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex align-items-center py-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-7 mx-auto">
+
+                <form class="account-form px-4 pt-4" method="post" enctype="multipart/form-data">
+
+                    {% if user_form.is_valid %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                         You have <strong>successfully</strong> updated your profile!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    <p class="small text-center pt-0">
+                        <a href="{% url 'account:dashboard' %}">Back to Dashboard</a>
+                    </p>
+                    {%else%}
+                    <h3>Change your details</h3>
+                    <p>You can edit your account using the following form:</p>
+                    {% endif %}
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        Error: Please try again!
+                    </div>
+                    {% endif %}
+
+                    {% csrf_token %}
+                    <label class="small font-weight-bold">{{ user_form.email.label}}</label>
+                    {{ user_form.email }}
+                    <label class="small font-weight-bold">{{ user_form.user_name.label}}</label>
+                    {{ user_form.user_name }}
+                    <label class="small font-weight-bold">{{ user_form.full_name.label}}</label>
+                    {{ user_form.full_name }}
+                    <label class="small font-weight-bold">{{ user_form.phone_number.label}}</label>
+                    {{ user_form.phone_number }}
+
+
+                    <button class="btn btn-primary btn-block py-2 mb-4 mt-5 fw-bold w-100" type="submit"
+                        value="Save changes">Save Changes</button>
+                    <hr class="mb-3">
+                </form>
+                     <form class="account-form px-4" action="{% url 'account:delete_user' %}" method="post">
+                        {% csrf_token %}
+                        <p class="h3 pt-4 font-weight-bold">Delete Account</p>
+                        <p>Are you sure you want to delete your account?</p>
+                        <a type="submit" role="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-danger btn-block py-2 mb-4 mt-5 fw-bold w-100">Delete</a>
+                </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal for deletion! -->
+<div class="modal fade"  id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Delete Account</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Do you really want to delete your account?
+          <p>This action cannot be undone!</p>
+        </div>
+        <div class="modal-footer">
+          <form class="modal-form px-4" action="{% url 'account:delete_user' %}" method="post">
+            {% csrf_token %}
+            <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            <button type="submit" role="button"
+                class="btn btn-danger">Yes
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

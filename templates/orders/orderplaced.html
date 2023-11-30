@@ -1,0 +1,48 @@
+{% extends "../store/base.html" %}
+{% block title %}Order Placed{% endblock %} 
+{% block style_ %}
+    .container-fluid {
+        max-width: 100%;
+    }
+
+    .account-form input {
+        border: 2px solid #ccc;
+        height: calc(2em + .75rem + 2px);
+    }
+
+    .account-form input:focus {
+        border-color: #1497ff;
+        box-shadow: none;
+    }
+{% endblock style_ %}
+    
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex align-items-center py-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-6  mx-auto">
+                            <div class="p-4">
+                                {% if billing_status %}
+                                    <h3 class="mb-4">Order Successful!</h3>
+                                    <p>Your order has been successfully placed.</p>
+                                    <p>Check your email for confirmation and order details.</p>
+                                    <a href="{% url 'account:dashboard' %}">See orders</a>
+                                {% else %}
+                                    <h3 class="mb-4">Order Unsuccessful</h3>
+                                    <p>Unfortunately, your order was unsuccessful.</p>
+                                    <p>Please check your email for more information or contact the admin.</p>
+                                    <a href="{% url 'orders:contact-admin' %}">Contact Admin</a>
+                                {% endif %}
+                            </div>       
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

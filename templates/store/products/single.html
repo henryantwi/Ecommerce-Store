@@ -1136,7 +1136,7 @@
           <div class="col-md-9">
             <div style="margin-left: 20px">
               <p>COMMENTS FROM VERIFIED PURCHASES ({{ total_purchases }})</p>
-              {% for review in reviews|slice:":4" %} {% if review.rating == 5 %}
+              {% for review in reviews|slice:":8" %} {% if review.rating == 5 %}
               <div class="mb-3">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

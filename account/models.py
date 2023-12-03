@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 
+
 class CustomAccountManager(BaseUserManager):
 
     def create_superuser(self, email, user_name, password, **other_fields):
@@ -37,7 +38,6 @@ class CustomAccountManager(BaseUserManager):
 
 
 class UserBase(AbstractBaseUser, PermissionsMixin):
-
     email = models.EmailField(_('email address'), unique=True)
     user_name = models.CharField(max_length=150, unique=True)
     full_name = models.CharField(max_length=150, blank=True)

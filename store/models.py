@@ -63,8 +63,6 @@ class Product(models.Model):
         return self.title
     
     
-
-
 class ProductReview(models.Model):
     RATING_CHOICES = (
         (1, '1 Star'),

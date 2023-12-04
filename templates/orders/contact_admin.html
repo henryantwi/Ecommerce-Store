@@ -21,7 +21,7 @@
                                 <form method="post">
                                     {% csrf_token %}
                                     <div class="form-group">
-                                        <label for="user_issue">Describe your issue:</label>
+                                        <label for="user_issue" class="">Describe your issue:</label>
                                         <textarea class="form-control" id="user_issue" name="user_issue" rows="5" required></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Submit</button>

@@ -172,17 +172,6 @@ def initiate_payment(request):
     return render(request, 'orders/home.html')
 
 
-def verify_payment(request, ref):
-    payment = get_object_or_404(Payment, ref=ref)
-    verified = payment.verify_payment()
-    if verified:
-        messages.success(request, "Verification Successful!")
-        return redirect('orders:order-placed')
-    else:
-        messages.error(request, "Verification Failed!")
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-
 def user_orders(request):
     user_id = request.user.id
     orders = Payment.objects.filter(user_id=user_id).filter(billing_status=True)

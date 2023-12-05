@@ -110,6 +110,7 @@ LOGIN_URL = '/account/login/'
 # Basket session ID
 BASKET_SESSION_ID = 'basket'
 
+# Email Sending Configurations
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587

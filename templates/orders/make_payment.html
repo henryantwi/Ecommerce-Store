@@ -98,7 +98,7 @@
        amount: '{{ payment.amount_value }}',
        ref: ref,
        callback: function(response){
-           window.location.href = "{% url 'orders:verify-payment' payment.ref %}";
+           window.location.href = "{% url 'payment:verify-payment' payment.ref %}";
        }
    }
    if (Boolean(currency)) {

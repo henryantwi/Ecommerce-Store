@@ -11,7 +11,8 @@ from django.utils.html import strip_tags
 
 from basket.basket import Basket
 
-from .models import OrderItem, Payment
+from .models import OrderItem
+from payment.models import Payment
 
 
 def contact_admin(request):

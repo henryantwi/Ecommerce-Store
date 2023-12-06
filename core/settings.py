@@ -1,8 +1,6 @@
 import os
 from pathlib import Path
 
-# from dotenv import load_dotenv
-# load_dotenv('.env')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -61,12 +59,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+db_pass = os.environ.get('POSTGRESQL_PASSWORD')
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ecomstore',
+        'USER': 'postgres',
+        'PASSWORD': db_pass,
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -111,15 +116,15 @@ LOGIN_URL = '/account/login/'
 BASKET_SESSION_ID = 'basket'
 
 # Email Sending Configurations
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = False
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY')
 PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY')

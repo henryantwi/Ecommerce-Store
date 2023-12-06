@@ -2,7 +2,6 @@ from django.conf import settings
 import requests
 
 
-# noinspection PyPackageRequirements
 class Paystack:
     PAYSTACK_SECRET_KEY = settings.PAYSTACK_SECRET_KEY
     base_url = 'https://api.paystack.co'
@@ -15,11 +14,25 @@ class Paystack:
             'Content-Type': 'application/json',
         }
         url = self.base_url + path
-        response = requests.get(url, headers=headers)
 
-        if response.status_code == 200:
-            response_data = response.json()
-            return response_data['status'], response_data['data']
+        try:
+            response = requests.get(url, headers=headers)
 
-        response_data = response.json()
-        return response_data['status'], response_data["message"]
+            # Check the HTTP response status
+            if response.status_code == 200:
+                response_data = response.json()
+                return response_data.get('status'), response_data.get('data')
+            else:
+                # Handle non-200 status codes (e.g., 4xx, 5xx)
+                response_data = response.json()
+                return response_data.get('status'), response_data.get('message')
+        
+        except requests.RequestException as e:
+            # Handle network-related errors, such as timeout or connection issues
+            print(f"Request Exception: {e}")
+            return False, "Request Exception occurred"
+
+        except Exception as e:
+            # Handle any other unexpected exceptions
+            print(f"Error verifying payment: {e}")
+            return False, "Error verifying payment"

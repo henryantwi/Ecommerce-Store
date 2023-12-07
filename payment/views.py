@@ -13,5 +13,7 @@ def verify_payment(request, ref):
         return redirect('orders:order-placed')
     else:
         messages.error(request, "Verification Failed!")
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        return redirect('orders:order-placed')
+        # return render(request, 'orders/orderplaced.html', {'billing_status': verified})
+        # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     

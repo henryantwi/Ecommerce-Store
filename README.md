@@ -13,7 +13,7 @@ TechTrove is an e-commerce store specializing in gadgets such as mobile phones a
 
 ## Technologies Used
 
-- Python's Django framework
+- Python (Django Framework)
 - HTML
 - CSS
 - Bootstrap

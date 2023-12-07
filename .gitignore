@@ -133,3 +133,6 @@ setup.cfg
 
 # Ignore .gitignore file (optional, as typically the .gitignore file itself should not be ignored)
 .gitignore
+
+moded.txt
+lorem.html

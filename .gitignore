@@ -135,3 +135,15 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+
+# Ignore .vscode directory
+.vscode/
+
+# Ignore .idea directory
+.idea/
+
+# Ignore setup.cfg file
+setup.cfg
+
+# Ignore .gitignore file (optional, as typically the .gitignore file itself should not be ignored)
+.gitignore

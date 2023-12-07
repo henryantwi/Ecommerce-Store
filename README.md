@@ -1,6 +1,6 @@
 # TechTrove E-Commerce Store
 
-![TechTrove Logo](screenshots\logo.png)
+![TechTrove Logo](screenshots/logo.png)
 
 ## Description
 

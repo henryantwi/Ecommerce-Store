@@ -1,27 +1,11 @@
-from django.db.models import Q
+from django.db.models import F, Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from basket.basket import Basket
+from orders.models import OrderItem
 
 from .models import Category, Product, ProductReview
-from orders.models import OrderItem
-# from .forms import ProductReviewForm  # Create this form if not already done
 
-# def add_product_review(request, product_id):
-#     product = get_object_or_404(Product, pk=product_id)
-#     if request.method == 'POST':
-#         form = ProductReviewForm(request.POST)
-#         if form.is_valid():
-#             review = form.save(commit=False)
-#             review.product = product
-#             review.user = request.user  # Assuming users are authenticated
-#             review.save()
-#             # Redirect to the product detail page or another appropriate page
-#             return redirect('store:product_detail', slug=product.slug)
-#     else:
-#         form = ProductReviewForm()
-
-#     return render(request, 'add_product_review.html', {'form': form, 'product': product})
 
 def calculate_percentage(count, total_count):
     return (count * 100) / total_count if total_count != 0 else 0
@@ -29,7 +13,6 @@ def calculate_percentage(count, total_count):
 def product_all(request):
     """Home Page of the site displaying all products"""
     # products = Product.objects.all()
-    # products = Product.products.all()
     products = Product.objects.filter(in_stock=True).order_by('?')
     context = {
         'products': products,
@@ -67,9 +50,10 @@ def product_detail(request, slug):
         'five': percentage_5_stars,
     }
     
+
     total_purchases = OrderItem.objects.filter(
+        # order__billing_status=True,
         product=product,
-        order__billing_status=True
     ).count()
 
     context = {

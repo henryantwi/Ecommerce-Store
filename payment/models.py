@@ -5,23 +5,17 @@ from django.db import models
 from django.db.models import PositiveIntegerField
 
 from .paystack import Paystack
-
+from orders.models import Order
 
 class Payment(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments', null=True, blank=True)
     amount = models.PositiveIntegerField()
     ref = models.CharField(max_length=200)
     email = models.EmailField()
     billing_status = models.BooleanField(default=False)
-    date_created = models.DateTimeField(auto_now_add=True)
-    # Change the nulls
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='order_user', null=True)
-    full_name = models.CharField(max_length=50, null=True)
-    address1 = models.CharField(max_length=250, null=True)
-    address2 = models.CharField(max_length=250, null=True)
-    phone = models.CharField(max_length=100, null=True)
-    country = models.CharField(max_length=250, default='Ghana')
-    state = models.CharField(max_length=20, null=True)
-    city = models.CharField(max_length=100, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+   
 
     class Meta:
         ordering = ('-date_created',)

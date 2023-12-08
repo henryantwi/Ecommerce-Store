@@ -3,16 +3,16 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.html import strip_tags
 
 from basket.basket import Basket
-
-from .models import OrderItem
 from payment.models import Payment
+
+from .models import Order, OrderItem
 
 
 def contact_admin(request):
@@ -67,8 +67,9 @@ def order_placed(request):
             subject = 'Your Order Details'
             email_template = 'orders/emails/order_confirmation.html'  # Replace with your email template
 
-            # Fetch additional order-related data
-            order_items = user_payment.items.all()  # Get all items in the order
+            
+            order_items = OrderItem.objects.filter(order__payments=user_payment)
+            
             total_amount = user_payment.amount
             # Add more order-related data as per your requirement
 
@@ -124,8 +125,11 @@ def order_placed(request):
 
 @login_required
 def initiate_payment(request):
+    
     basket = Basket(request)
+    
     if request.method == 'POST':
+        
         user_id = request.user.id
         user = get_object_or_404(get_user_model(), id=user_id)
         cust_name = request.POST.get('custName')
@@ -135,19 +139,15 @@ def initiate_payment(request):
         address2 = request.POST.get('address2')
         state = request.POST.get('state')
         city = request.POST.get('city')
-
         total = str(basket.get_total_price())
         total = total.replace('.', '')
         total = int(total)
         baskettotal = total
-        # user = request.user
 
-        # Create the Payment object with retrieved data
-        order = Payment.objects.create(
-            amount=total,
-            email=email,
+        order = Order.objects.create(
             user=user,
-            full_name=cust_name,
+            total_price=baskettotal,
+            full_name=cust_name, 
             address1=address1,
             address2=address2,
             phone=phone,
@@ -158,13 +158,25 @@ def initiate_payment(request):
         order_id = order.pk
 
         for item in basket:
-            OrderItem.objects.create(order_id=order_id, product=item['product'], price=item['price'],
-                                     quantity=item['qty'])
+            OrderItem.objects.create(
+                order_id=order_id,
+                product=item['product'],
+                price=item['price'], 
+                quantity=item['qty']
+            )
+
+        payment = Payment.objects.create(
+            order=order, 
+            amount=total,
+            email=email,
+            user=user
+        )
+        payment.save()
 
         context = {
             'cutomer_name': cust_name,
             'amount': basket.get_total_price(),
-            'payment': order,
+            'payment': payment,
             'paystack_public_key': settings.PAYSTACK_PUBLIC_KEY,
         }
         return render(request, 'orders/make_payment.html', context)
@@ -174,5 +186,7 @@ def initiate_payment(request):
 
 def user_orders(request):
     user_id = request.user.id
-    orders = Payment.objects.filter(user_id=user_id).filter(billing_status=True)
+    # Fetch orders associated with the user using the Payment model's order field
+    orders = Order.objects.filter(payments__user_id=user_id, payments__billing_status=True).order_by('-date_ordered')
+
     return orders

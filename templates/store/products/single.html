@@ -24,14 +24,15 @@
               >
               <span
                 style="display: block; text-decoration: line-through"
-                class="text-muted"
+                class="text-muted mt-2"
                 ><em
                   >GH₵ {{ product.past_price|floatformat:2|intcomma }}</em
                 ></span
               >
-              <!-- <span class="text-muted">includes tax</span> -->
+                <div class="mt-1">
+                    <span class="text-muted">includes tax</span>
+                </div>
             </div>
-            <div></div>
           </div>
           <hr class="mb-4 mt-5" />
           <div
@@ -1464,7 +1465,7 @@
                 <div class="col-md-9">
                   <div class="mb-0">
                     <span class="text-muted" style="font-size: 0.95rem"
-                      >{{ review.created|date }} by {{ review.user.full_name|get_first_name }}</span
+                      >{{ review.created|date }} by {{ review.user.full_name|get_first_name|title }}</span
                     >
                   </div>
                 </div>

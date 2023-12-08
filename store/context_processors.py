@@ -1,7 +1,7 @@
 from .models import Category
 
 
-def categories(request):
+def categories(request) -> dict:
     context = {
         'categories': Category.objects.all()
     }

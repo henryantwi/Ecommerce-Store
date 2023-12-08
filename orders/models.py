@@ -18,10 +18,10 @@ class Order(models.Model):
     country = models.CharField(max_length=250, default='Ghana')
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=20)
-    
+
     # Date the order was placed
     date_ordered = models.DateTimeField(default=timezone.now)
-    
+
     # Tracking system for the order
     ORDER_STATUS_CHOICES = (
         (1, 'Waiting for confirmation'),
@@ -33,7 +33,7 @@ class Order(models.Model):
     )
     estimated_delivery_date = models.DateField(blank=True, null=True)
     status = models.IntegerField(choices=ORDER_STATUS_CHOICES, default=1)
-    
+
     @staticmethod
     @receiver(post_save, sender='orders.Order')
     def update_related_order_items_status(sender, instance, **kwargs):
@@ -51,7 +51,7 @@ class Order(models.Model):
             return payment.billing_status
         except Payment.DoesNotExist:
             return False
-    
+
     def __str__(self):
         paid = self.get_billing_status()
         payment_successful = "Paid" if paid else "Issue with Payment"
@@ -63,17 +63,19 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=9, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
-    
+
     def __str__(self):
         return f"Order #{self.order.pk} - {self.product.title}"
+
 
 class OrderTracking(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     status = models.IntegerField(choices=Order.ORDER_STATUS_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['-timestamp']
+
 
 class ProductReview(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -82,6 +84,6 @@ class ProductReview(models.Model):
     review = models.TextField()
     rating = models.IntegerField()
     review_date = models.DateTimeField(default=timezone.now)
-    
+
     def __str__(self):
         return f"Review by {self.user.username} on {self.product.title}"

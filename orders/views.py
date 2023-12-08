@@ -39,16 +39,6 @@ def contact_admin(request):
     return render(request, 'orders/contact_admin.html')
 
 
-# @login_required
-# def order_placed(request):
-#     basket = Basket(request)
-#     basket.clear()
-
-#     return render(request, 'orders/orderplaced.html')
-
-
-# Assuming the rest of the imports and code context are retained...
-
 @login_required
 def order_placed(request):
     basket = Basket(request)
@@ -67,9 +57,8 @@ def order_placed(request):
             subject = 'Your Order Details'
             email_template = 'orders/emails/order_confirmation.html'  # Replace with your email template
 
-            
             order_items = OrderItem.objects.filter(order__payments=user_payment)
-            
+
             total_amount = user_payment.amount
             # Add more order-related data as per your requirement
 
@@ -125,12 +114,11 @@ def order_placed(request):
 
 @login_required
 def initiate_payment(request):
-    
     basket = Basket(request)
-    
+
     if request.method == 'POST':
-        
-        user_id = request.user.id
+
+        user_id: int = request.user.id
         user = get_object_or_404(get_user_model(), id=user_id)
         cust_name = request.POST.get('custName')
         email = request.POST.get('email')
@@ -142,12 +130,12 @@ def initiate_payment(request):
         total = str(basket.get_total_price())
         total = total.replace('.', '')
         total = int(total)
-        baskettotal = total
+        basket_total = total
 
         order = Order.objects.create(
             user=user,
-            total_price=baskettotal,
-            full_name=cust_name, 
+            total_price=basket_total,
+            full_name=cust_name,
             address1=address1,
             address2=address2,
             phone=phone,
@@ -161,12 +149,12 @@ def initiate_payment(request):
             OrderItem.objects.create(
                 order_id=order_id,
                 product=item['product'],
-                price=item['price'], 
+                price=item['price'],
                 quantity=item['qty']
             )
 
         payment = Payment.objects.create(
-            order=order, 
+            order=order,
             amount=total,
             email=email,
             user=user
@@ -174,7 +162,6 @@ def initiate_payment(request):
         payment.save()
 
         context = {
-            'cutomer_name': cust_name,
             'amount': basket.get_total_price(),
             'payment': payment,
             'paystack_public_key': settings.PAYSTACK_PUBLIC_KEY,

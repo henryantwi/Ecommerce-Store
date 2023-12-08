@@ -10,6 +10,7 @@ from .models import Category, Product, ProductReview
 def calculate_percentage(count, total_count):
     return (count * 100) / total_count if total_count != 0 else 0
 
+
 def product_all(request):
     """Home Page of the site displaying all products"""
     # products = Product.objects.all()
@@ -27,13 +28,13 @@ def product_detail(request, slug):
     reviews = product.reviews.all().order_by('-rating')
     total_count = product.total_reviews()
     # total_count = sum(product.ratings_count.values())
-    
-    percentage_1_star  = calculate_percentage(product.rating_count(1), total_count)
+
+    percentage_1_star = calculate_percentage(product.rating_count(1), total_count)
     percentage_2_stars = calculate_percentage(product.rating_count(2), total_count)
     percentage_3_stars = calculate_percentage(product.rating_count(3), total_count)
     percentage_4_stars = calculate_percentage(product.rating_count(4), total_count)
     percentage_5_stars = calculate_percentage(product.rating_count(5), total_count)
-    
+
     ratings_count = {
         '5_stars': product.rating_count(5),
         '4_stars': product.rating_count(4),
@@ -41,15 +42,14 @@ def product_detail(request, slug):
         '2_stars': product.rating_count(2),
         '1_star': product.rating_count(1),
     }
-    
+
     rating_percentages = {
-        'one': percentage_1_star, 
+        'one': percentage_1_star,
         'two': percentage_2_stars,
         'three': percentage_3_stars,
         'four': percentage_4_stars,
         'five': percentage_5_stars,
     }
-    
 
     total_purchases = OrderItem.objects.filter(
         # order__billing_status=True,
@@ -58,10 +58,10 @@ def product_detail(request, slug):
 
     context = {
         'product': product,
-        'product_qty': product_qty,  
+        'product_qty': product_qty,
         'reviews': reviews,
         'ratings_count': ratings_count,
-        'rating_percentages':rating_percentages,
+        'rating_percentages': rating_percentages,
         'total_purchases': total_purchases,
     }
     return render(request, 'store/products/single.html', context)

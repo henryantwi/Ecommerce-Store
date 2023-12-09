@@ -45,8 +45,8 @@ class Order(models.Model):
                 related_order_items.update(status=instance.status)
 
     def get_billing_status(self):
+        from payment.models import Payment
         try:
-            from payment.models import Payment
             payment = self.payments.get(order=self)
             return payment.billing_status
         except Payment.DoesNotExist:

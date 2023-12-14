@@ -48,10 +48,11 @@
             Total paid: <span class="fw-bold">GH₵ {{ order.total_price|format_currency }}</span>
           </div>
         </div>
+
         <div class="col-md-5 col-lg-4 order-md-last p-0 order-3">
           <div class="d-grid gap-2 ">
             <button class="btn btn-warning" type="button">Problem with order</button>
-            <a class="btn btn-light" type="button">Leave a review</a>
+            <!-- <a class="btn btn-light" type="button">Leave a review</a> -->
           </div>
         </div>
   
@@ -67,15 +68,46 @@
               <div class="col-md-10">
                 <div class="card-body p-1">
                   <a class="text-decoration-none" href="{{ order_item.product.get_absolute_url }}">
-                    <p class="card-text small">
+                    <p class="card-text small" style="margin-left: 13px;">
                       {{order_item.product.title|title|slice:":40"}} 
                       <br>
                       {{order_item.product.title|title|slice:"41:80"}} 
                       <span class="text-muted">GH₵ {{ order_item.product.price }}</span>
                     </p>
+                    <!-- <a class="btn btn-light" type="button">Leave a review</a> -->
                   </a>
+                  
+                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal{{order_item.product.id}}">Leave a review</button> 
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="exampleModal{{order_item.product.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Product Review</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="topic" class="col-form-label">Topic:</label>
+                            <input type="text" name="topic" class="form-control" id="topic" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="review" class="col-form-label">Review Content:</label>
+                            <textarea class="form-control" name="review" id="review" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="#" type="button" class="btn btn-primary">Add review</a>
+                </div>
+                </div>
             </div>
           </div>
 
@@ -101,6 +133,13 @@
   </div>
   
 </main>
+  <script>
+    const myModal = document.getElementById('myModal')
+    const myInput = document.getElementById('myInput')
 
+    myModal.addEventListener('shown.bs.modal', () => {
+    myInput.focus()
+    })
+  </script>
 
 {% endblock %}

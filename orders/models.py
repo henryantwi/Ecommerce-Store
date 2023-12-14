@@ -63,6 +63,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=9, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
+    reviewed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Order #{self.order.pk} - {self.product.title}"
@@ -76,14 +77,3 @@ class OrderTracking(models.Model):
     class Meta:
         ordering = ['-timestamp']
 
-
-class ProductReview(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    review = models.TextField()
-    rating = models.IntegerField()
-    review_date = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return f"Review by {self.user.username} on {self.product.title}"

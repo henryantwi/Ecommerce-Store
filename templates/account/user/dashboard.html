@@ -1,6 +1,16 @@
-{% extends "../../store/base.html" %} {% load static %} {% block title %}Dashboard{%endblock %} {% block content %}
+{% extends "../../store/base.html" %} 
+{% load static %} 
+{% block title %}Dashboard{%endblock %} 
 {% load account_custom_filters %}
 
+{% block style_ %}
+  .bi-star, .bi-star-fill {
+    color: #0b5ed7;
+  }
+{% endblock style_ %}
+  
+
+{% block content %}
 
 <main class="pt-5">
   <div class="container" style="max-width: 1000px">
@@ -18,7 +28,7 @@
     {% if orders %}
     {% for order in orders %}
       <div class="row g-3 mb-5">
-      
+       
         <div class="col-12 bg-light p-3 d-flex justify-content-between">
           <div class="d-flex d-flex-inline">
   
@@ -60,55 +70,112 @@
   
           {% for order_item in order.orderitem_set.all %}
   
-          <div class="card border-0">
-            <div class="row g-0">
-              <div class="col-md-2 d-none d-md-block">
-                <a href="{{ order_item.product.get_absolute_url }}"><img class="img-fluid" style="width:90px" src="{{order_item.product.image.url}}" /></a>
-              </div>
-              <div class="col-md-10">
-                <div class="card-body p-1">
-                  <a class="text-decoration-none" href="{{ order_item.product.get_absolute_url }}">
-                    <p class="card-text small" style="margin-left: 13px;">
-                      {{order_item.product.title|title|slice:":40"}} 
-                      <br>
-                      {{order_item.product.title|title|slice:"41:80"}} 
-                      <span class="text-muted">GH₵ {{ order_item.product.price }}</span>
-                    </p>
-                    <!-- <a class="btn btn-light" type="button">Leave a review</a> -->
-                  </a>
-                  
-                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal{{order_item.product.id}}">Leave a review</button> 
+            <div class="card border-0">
+              <div class="row g-0">
+                <div class="col-md-2 d-none d-md-block">
+                  <a href="{{ order_item.product.get_absolute_url }}"><img class="img-fluid" style="width:90px" src="{{order_item.product.image.url}}" /></a>
+                </div>
+                <div class="col-md-10">
+                  <div class="card-body p-1">
+                    <a class="text-decoration-none" href="{{ order_item.product.get_absolute_url }}">
+                      <p class="card-text small" style="margin-left: 13px;">
+                        {{order_item.product.title|title|slice:":40"}} 
+                        <br>
+                        {{order_item.product.title|title|slice:"41:80"}} 
+                        <span class="text-muted">GH₵ {{ order_item.product.price|format_currency }}</span>
+                      </p>
+                      <!-- <a class="btn btn-light" type="button">Leave a review</a> -->
+                    </a>
+                    
+                    {% if not order_item.reviewed %}
+                      <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal{{order_item.product.id}}">Leave a review</button> 
+                    {% endif %}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="modal fade" id="exampleModal{{order_item.product.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal fade" id="exampleModal{{order_item.product.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Product Review</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="topic" class="col-form-label">Topic:</label>
-                            <input type="text" name="topic" class="form-control" id="topic" required>
+                <form method="post" action="{% url 'account:submit_review' %}">
+                  {% csrf_token %}
+                  <div class="modal-body">
+                      <input type="hidden" name="product_id" value="{{ order_item.product.id }}">
+                      <input type="hidden" name="order" value="{{ order.id }}">
+                      <div class="mb-2">
+                          <span class="col-form-label">Product: {{order_item.product.title}}</span>
+                      </div>
+                      <div class="mb-3">
+                          <label for="topic" class="col-form-label">Topic:</label>
+                          <input type="text" name="topic" class="form-control" id="topic" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="review" class="col-form-label">Review Content:</label>
+                          <textarea class="form-control" name="review" id="review" required></textarea>
+                      </div>
+                      <div class="mb-3">
+                        <div class="rating mb-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                            <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                          </svg> 
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                              <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                          </svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                              <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                          </svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                              <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                          </svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                              <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                          </svg>
                         </div>
-                        <div class="mb-3">
-                            <label for="review" class="col-form-label">Review Content:</label>
-                            <textarea class="form-control" name="review" id="review" required></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="#" type="button" class="btn btn-primary">Add review</a>
-                </div>
-                </div>
+                        <select name="rating" class="form-select" id="ratingDropdown" required>
+                          <option selected>Select Rating</option>
+                          <option value="1">1 Star</option>
+                          <option value="2">2 Stars</option>
+                          <option value="3">3 Stars</option>
+                          <option value="4">4 Stars</option>
+                          <option value="5">5 Stars</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add review</button>
+                    </div>
+                </form>
+              </div>
             </div>
+
+            <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('ratingDropdown').addEventListener('change', function () {
+                  const rating = parseInt(this.value);
+                  const ratingDiv = document.querySelector('.rating');
+                  ratingDiv.innerHTML = ''; 
+            
+                  // Add filled stars based on the selected rating
+                  for (let i = 1; i <= 5; i++) {
+                    if (i <= rating) {
+                      ratingDiv.innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                      </svg> `;
+                    } else {
+                      ratingDiv.innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                        <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                      </svg> `;
+                    }
+                  }
+                });
+              });
+            </script>
           </div>
 
           {% if not forloop.last %}
@@ -139,7 +206,9 @@
 
     myModal.addEventListener('shown.bs.modal', () => {
     myInput.focus()
-    })
+    });
+    
+    
   </script>
 
 {% endblock %}

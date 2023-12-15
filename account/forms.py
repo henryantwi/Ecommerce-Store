@@ -5,7 +5,6 @@ from phonenumber_field.formfields import PhoneNumberField
 
 from .models import UserBase
 
-#  SetPasswordForm
 
 
 class UserLoginForm(AuthenticationForm):

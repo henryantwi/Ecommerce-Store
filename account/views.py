@@ -24,19 +24,19 @@ def dashboard(request):
     return render(request, 'account/user/dashboard.html', {'orders': orders})
     # return render(request, 'account/user/dashboard.html', {'section': 'profile', 'orders': orders})
 
+
 @login_required
 def submit_review(request):
-    
     if request.method == "POST":
-        product_id = request.POST.get('product_id') 
+        product_id = request.POST.get('product_id')
         user = request.user
         topic = request.POST.get('topic')
         review_content = request.POST.get('review')
         rating = int(request.POST.get('rating'))
         order_id = request.POST.get('order')
-        
+
         product = Product.objects.get(pk=product_id)
-        
+
         review = ProductReview.objects.get_or_create(
             product=product,
             user=user,
@@ -44,23 +44,24 @@ def submit_review(request):
             review=review_content,
             rating=rating
         )
-        
+
         ic(product)
         ic(order_id)
-        
+
         order = Order.objects.get(id=order_id)
-        
+
         order_item = get_object_or_404(OrderItem, order=order, product=product)
         print(order_item.reviewed)
         order_item.reviewed = True
         order_item.save()
-        
+
         print(order_item.reviewed)
         print(request.path)
-        
+
         return redirect('account:dashboard')
-        
+
     return HttpResponse("<h1>Hello World</h1>")
+
 
 @login_required
 def edit_details(request):
@@ -96,9 +97,9 @@ def account_register(request):
             user.set_password(register_form.cleaned_data['password'])
             user.is_active = False
             user.save()
-            
+
             print(user.pk)
-            
+
             current_site = get_current_site(request)
             subject = 'Activate your Account'
             message = render_to_string('account/registration/account_activation_email.html', {
@@ -108,34 +109,36 @@ def account_register(request):
                 'token': account_activation_token.make_token(user),
             })
             user.email_user(subject=subject, message=message)
-            
+
             print(user.email)  # Debug print statement
-            print(message)
+            # print(message)
             return HttpResponse('<h1>Registration Successful!</h1> <h1>Check your email for activation link</h1>')
     else:
         register_form = RegistrationForm()
     return render(request, 'account/registration/register.html', {'form': register_form})
 
 
-
-
 def account_activate(request, uidb64, token):
+    user = None
+    status = None
     try:
-        
         uid = force_str(urlsafe_base64_decode(uidb64))
-        print(uid)
         user = UserBase.objects.get(pk=uid)
-        print(user)
+        status = account_activation_token.check_token(user, token)
         
-    except (TypeError, ValueError, OverflowError, ObjectDoesNotExist) as e:  # Use ObjectDoesNotExist here
+        ic(uid)
+        ic(token)
+        ic(user)
+        ic(status)
+        
+    except (TypeError, ValueError, OverflowError, ObjectDoesNotExist) as e:
         user = None
-    finally:
-        if user is not None and account_activation_token.check_token(user, token):
-            user.is_active = True
-            user.save()
-            login(request, user)
-            return redirect('account:dashboard')
-        else:
-            return render(request, 'account/registration/activation_invalid.html')
-
-
+        
+    if user is not None and status:  
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return redirect('account:dashboard')
+    
+    else:
+        return render(request, 'account/registration/activation_invalid.html')

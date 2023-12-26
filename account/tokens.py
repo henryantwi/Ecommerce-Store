@@ -10,11 +10,9 @@ class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
         expiry_duration = timedelta(days=1)  # Token expires after 1 day
         expiry_date = timestamp + expiry_duration.total_seconds()  # Add seconds instead of timedelta
         return (
-            text_type(user.pk) + text_type(timestamp) +
-            text_type(expiry_date) + text_type(user.is_active)
+                text_type(user.pk) + text_type(timestamp) +
+                text_type(expiry_date) + text_type(user.is_active)
         )
-
-
 
 
 account_activation_token = AccountActivationTokenGenerator()

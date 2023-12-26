@@ -1,7 +1,6 @@
 {% extends '../../store/base.html' %}
 {% load static %}
 {% block content %}
-<h1>Invalid User</h1>
 
 <div class="container-fluid">
     <div class="row no-gutter">
@@ -11,7 +10,8 @@
                     <div class="row">
                         <div class="col-12 col-lg-6 mx-auto">
                             <div class="p-4">
-                                <h3 class="mb-4">Invalid User</h3>
+                                <h3 class="mb-4">There was a problem activating your account!</h3> 
+                                <a href="{% url 'account:login' %}">Log In to Continue</a>
                             </div>       
                         </div>
                     </div>

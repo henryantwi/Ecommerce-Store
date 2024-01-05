@@ -11,7 +11,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = True
 # DEBUG = os.environ.get('DEBUG') == True
-# ic(DEBUG)
+ic(DEBUG)
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'nesttop.com']
 

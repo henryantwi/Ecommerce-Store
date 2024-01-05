@@ -1,12 +1,17 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+from icecream import ic
 
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('ECOM_PROJECT_SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = True
+# DEBUG = os.environ.get('DEBUG') == True
+# ic(DEBUG)
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'nesttop.com']
 
@@ -66,7 +71,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ecomstore',
         'USER': 'postgres',
-        'PASSWORD': db_pass,
+        # 'PASSWORD': db_pass,
+        'PASSWORD': 'actionword',
         'HOST': 'localhost',
         'PORT': '5432'
     }
@@ -116,15 +122,15 @@ LOGIN_URL = '/account/login/'
 BASKET_SESSION_ID = 'basket'
 
 # Email Sending Configurations
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = False
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY')
 PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY')

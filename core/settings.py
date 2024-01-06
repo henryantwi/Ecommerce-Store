@@ -66,18 +66,28 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 db_pass = os.environ.get('POSTGRESQL_PASSWORD')
 
+# PostgreSQL Database settings:
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ecomstore',
+#         'USER': 'postgres',
+#         # 'PASSWORD': db_pass,
+#         'PASSWORD': 'actionword',
+#         'HOST': 'localhost',
+#         'PORT': '5432'
+#     }
+# }
+
+# SQLite Database Settings:
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecomstore',
-        'USER': 'postgres',
-        # 'PASSWORD': db_pass,
-        'PASSWORD': 'actionword',
-        'HOST': 'localhost',
-        'PORT': '5432'
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {

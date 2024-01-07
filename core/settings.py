@@ -74,7 +74,6 @@ db_pass = os.environ.get('POSTGRESQL_PASSWORD')
 #         'NAME': 'ecomstore',
 #         'USER': 'postgres',
 #         # 'PASSWORD': db_pass,
-#         'PASSWORD': 'actionword',
 #         'HOST': 'localhost',
 #         'PORT': '5432'
 #     }

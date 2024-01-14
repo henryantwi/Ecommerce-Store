@@ -18,7 +18,6 @@ class Order(models.Model):
     country = models.CharField(max_length=250, default='Ghana')
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=20)
-    related_products = models.TextField(null=True)
 
     # Date the order was placed
     date_ordered = models.DateTimeField(default=timezone.now)

@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from icecream import ic
+from decouple import config
 
 load_dotenv()
 
@@ -9,8 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = True
-# DEBUG = os.environ.get('DEBUG') == True
+DEBUG = config('DEBUG', default=False, cast=bool)
 ic(DEBUG)
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'nesttop.com']

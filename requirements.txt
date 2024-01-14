@@ -31,6 +31,7 @@ pycodestyle==2.11.1
 pyflakes==3.1.0
 Pygments==2.16.1
 pypaystack2==2.0.1
+python-decouple==3.8
 python-dotenv==1.0.0
 requests==2.31.0
 rich==13.6.0

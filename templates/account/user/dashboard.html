@@ -81,13 +81,13 @@
                       <p class="card-text small" style="margin-left: 13px;">
                         {{order_item.product.title|title|slice:":40"}} 
                         <br>
-                        {{order_item.product.title|title|slice:"41:80"}} 
-                        <span class="text-muted">GH₵ {{ order_item.product.price|format_currency }}</span>
+                        {{order_item.product.title|title|slice:"40:80"}} 
+                        <span class="text-muted" style="display: block;">GH₵ {{ order_item.product.price|format_currency }}</span>
                       </p>
                       <!-- <a class="btn btn-light" type="button">Leave a review</a> -->
                     </a>
                     
-                    {% if not order_item.reviewed %}
+                    {% if not order_item.reviewed and order.status == 5 %}
                       <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal{{order_item.product.id}}">Leave a review</button> 
                     {% endif %}
                   </div>

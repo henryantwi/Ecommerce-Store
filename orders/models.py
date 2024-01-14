@@ -18,6 +18,7 @@ class Order(models.Model):
     country = models.CharField(max_length=250, default='Ghana')
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=20)
+    related_products = models.TextField(null=True)
 
     # Date the order was placed
     date_ordered = models.DateTimeField(default=timezone.now)
@@ -29,7 +30,8 @@ class Order(models.Model):
         (3, 'Shipped'),
         (4, 'Out for delivery'),
         (5, 'Delivered'),
-        (6, 'Unsuccessful delivery')
+        (6, 'Unsuccessful delivery'),
+        (7, 'Order canceled')
     )
     estimated_delivery_date = models.DateField(blank=True, null=True)
     status = models.IntegerField(choices=ORDER_STATUS_CHOICES, default=1)

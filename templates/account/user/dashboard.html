@@ -54,9 +54,9 @@
           </div>
           <div class="text-center">Order Status: 
            {% if order.status == 1 %}
-            <span style="color:blue">{{ order.get_status_display|title }}</span>
+              <span style="color:rgb(55, 24, 24)">{{ order.get_status_display|title }}</span>
            {% elif order.status == 2 %}
-            so
+              <span style="color: blue;">{{ order.get_status_display|title }}</span>
            {% endif %}
           </div>
 

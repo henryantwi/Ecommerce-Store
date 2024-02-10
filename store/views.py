@@ -1,10 +1,11 @@
-from django.db.models import F, Q
-from django.shortcuts import get_object_or_404, redirect, render
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, render
+from icecream import ic
 
 from basket.basket import Basket
 from orders.models import OrderItem
 
-from .models import Category, Product, ProductReview
+from .models import Category, Product
 
 
 def calculate_percentage(count, total_count):
@@ -81,7 +82,7 @@ def search_products(request):
     query = request.GET.get('q')
 
     if query:
-        # Filter products by name, category, brand, and in_stock=True
+        # Filter products by name, category, brand, in_stock=True and order by random
         products = Product.objects.filter(
             Q(title__icontains=query) |
             Q(category__name__icontains=query) |

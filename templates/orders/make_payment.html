@@ -95,7 +95,7 @@
    let obj = {
        key: '{{ paystack_public_key }}',
        email: '{{ payment.email }}',
-       amount: '{{ payment.amount_value }}',
+       amount: '{{ payment.amount }}',
        ref: ref,
        callback: function(response){
            window.location.href = "{% url 'payment:verify-payment' payment.ref %}";

@@ -177,5 +177,7 @@ def user_orders(request):
     user_id = request.user.id
     # Fetch orders associated with the user using the Payment model's order field
     orders = Order.objects.filter(payments__user_id=user_id, payments__billing_status=True).order_by('-date_ordered')
+    
+    # print(orders.get_status)
 
     return orders

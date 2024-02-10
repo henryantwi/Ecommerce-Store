@@ -21,8 +21,11 @@ from .tokens import account_activation_token
 @login_required
 def dashboard(request):
     orders = user_orders(request)
-    return render(request, 'account/user/dashboard.html', {'orders': orders})
-    # return render(request, 'account/user/dashboard.html', {'section': 'profile', 'orders': orders})
+    context = {
+        'orders': orders,
+    }
+    return render(request, 'account/user/dashboard.html', context)
+    
 
 
 @login_required
@@ -112,7 +115,8 @@ def account_register(request):
 
             print(user.email)  # Debug print statement
             # print(message)
-            return HttpResponse('<h1>Registration Successful!</h1> <h1>Check your email for activation link</h1>')
+            return render(request, 'account/registration/email_sent.html')
+            # return HttpResponse('<h1>Registration Successful!</h1> <h1>Check your email for activation link</h1>')
     else:
         register_form = RegistrationForm()
     return render(request, 'account/registration/register.html', {'form': register_form})

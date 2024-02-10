@@ -52,7 +52,13 @@
             </div>
             
           </div>
-          <div class="text-center">Order Status: {{ order.get_status_display|title }}</div>
+          <div class="text-center">Order Status: 
+           {% if order.status == 1 %}
+            <span style="color:blue">{{ order.get_status_display|title }}</span>
+           {% elif order.status == 2 %}
+            so
+           {% endif %}
+          </div>
 
           <div class="text-end">
             Total paid: <span class="fw-bold">GH₵ {{ order.total_price|format_currency }}</span>

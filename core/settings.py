@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
-ic(DEBUG)
+# ic(DEBUG)
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'nesttop.com']
 

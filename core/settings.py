@@ -8,10 +8,13 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+# SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'django-insecure-#^_!'
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+# DEBUG = config('DEBUG', default=False, cast=bool)
 # ic(DEBUG)
+
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'nesttop.com']
 
@@ -134,7 +137,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = 'shop.techtroveteam@gmail.com'
+EMAIL_HOST_PASSWORD = 'bqomjjrqtpipahcu'
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

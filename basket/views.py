@@ -14,6 +14,7 @@ def basket_summary(request):
     }
     return render(request, 'basket/summary.html', context)
 
+
 def basket_add(request):
     basket = Basket(request)
     if request.POST.get('action') == 'post':
@@ -25,7 +26,8 @@ def basket_add(request):
         basketqty = basket.__len__()
         response = JsonResponse({'qty': basketqty})
         return response
-    
+
+
 def basket_delete(request):
     basket = Basket(request)
     if request.POST.get('action') == 'post':
@@ -35,9 +37,10 @@ def basket_delete(request):
         # basket_total = 'GH₵ {:,.2f}'.format(basket.get_total_price())
         basket_subtotal = basket.get_subtotal_price()
         basket_total = basket.get_total_price()
-        response  = JsonResponse({'qty': basketqty,'subtotal': basket_subtotal, 'total':basket_total})
+        response = JsonResponse({'qty': basketqty, 'subtotal': basket_subtotal, 'total': basket_total})
         return response
-    
+
+
 def basket_update(request):
     basket = Basket(request)
     if request.POST.get('action') == 'post':
@@ -48,5 +51,5 @@ def basket_update(request):
         # basket_total = 'GH₵ {:,.2f}'.format(basket.get_total_price())
         basket_subtotal = basket.get_subtotal_price()
         basket_total = basket.get_total_price()
-        response = JsonResponse({'qty': basketqty, 'subtotal': basket_subtotal, 'total':basket_total})
+        response = JsonResponse({'qty': basketqty, 'subtotal': basket_subtotal, 'total': basket_total})
         return response

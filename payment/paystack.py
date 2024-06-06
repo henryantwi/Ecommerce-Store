@@ -1,7 +1,9 @@
 from django.conf import settings
+from django.views . decorators.debug import sensitive_variables
 import requests
 
 
+@sensitive_variables('PAYSTACK_SECRET_KEY')
 class Paystack:
     PAYSTACK_SECRET_KEY = settings.PAYSTACK_SECRET_KEY
     base_url = 'https://api.paystack.co'

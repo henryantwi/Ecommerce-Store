@@ -59,14 +59,14 @@
                     <button class="btn btn-primary btn-block py-2 mb-4 mt-5 fw-bold w-100" type="submit"
                         value="Save changes">Save Changes</button>
                     <hr class="mb-3">
-                </form>
+                 </form>
                      <form class="account-form px-4" action="{% url 'account:delete_user' %}" method="post">
                         {% csrf_token %}
                         <p class="h3 pt-4 font-weight-bold">Delete Account</p>
                         <p>Are you sure you want to delete your account?</p>
                         <a type="submit" role="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-danger btn-block py-2 mb-4 mt-5 fw-bold w-100">Delete</a>
-                </form>
-                        </div>
+                     </form>
+                    </div>
                     </div>
                 </div>
             </div>

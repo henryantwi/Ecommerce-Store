@@ -10,6 +10,7 @@ urlpatterns = [
     path('account/', include('account.urls', namespace='account')),
     path('orders/', include('orders.urls', namespace='orders')),
     path('payment/', include('payment.urls', namespace='payment')),
+    path("paystack/", include(('django_paystack.urls', 'paystack'), namespace='paystack')),
 ]
 
 if settings.DEBUG:

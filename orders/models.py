@@ -8,6 +8,13 @@ from store.models import Product
 
 
 class Order(models.Model):
+    """Order model for storing order details
+    
+    Keyword arguments:
+    products -- stores the products in the order
+    Return: return_description
+    """
+    
     products = models.ManyToManyField(Product, through='OrderItem')
     total_price = models.PositiveIntegerField(null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
